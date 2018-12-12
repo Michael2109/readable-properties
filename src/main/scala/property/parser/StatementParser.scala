@@ -14,8 +14,8 @@ class Statements(indent: Int) {
   val indents = P(NEWLINE ~~ " ".repX(indent))
   val spaces = P((LexicalParser.nonewlinewscomment.? ~~ "\n").repX(1))
   val space_indents = P(spaces.repX ~~ " ".repX(indent))
+  val endLine = P("\n" ~~ (" " | "\t").repX(indent + 1).!.map(_.length) ~~ LexicalParser.comment.!.?)
 
-  val propertySourceParser: P[Seq[Statement]] =  propertyGroup.rep(1).map(x => x)
 
   val propertyGroup: P[Statement] = P(ExpressionParser.identifierParser ~ ":" ~~ indentedBlock).map(x => PropertyGroup(x._1, x._2))
 
@@ -25,10 +25,11 @@ class Statements(indent: Int) {
 
   val statementParser: P[Statement] = P(!commentParser ~ (propertyParser | propertyGroup))
 
+  val propertySourceParser: P[Seq[Statement]] =  (statementParser ~ !endLine).repX(0).map(x => x)
+
   val indentedBlock: P[Seq[Statement]] = {
     val deeper: P[Int] = {
       val commentLine = P("\n" ~~ LexicalParser.nonewlinewscomment.?.map(_ => 0)).map((_, Some("")))
-      val endLine = P("\n" ~~ (" " | "\t").repX(indent + 1).!.map(_.length) ~~ LexicalParser.comment.!.?)
       P(LexicalParser.nonewlinewscomment.? ~~ (endLine | commentLine).repX(1)).map {
         _.collectFirst { case (s, None) => s }
       }.filter(_.isDefined).map(_.get)
