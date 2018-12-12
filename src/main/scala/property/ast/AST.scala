@@ -16,5 +16,5 @@ object AST {
 
   trait Statement
   case class Property(identifier: Identifier, value: Expression) extends Statement
-  case class PropertyGroup(expression: Expression, statement: Seq[Statement]) extends Statement
+  case class PropertyGroup(expression: Expression, statements: Seq[Statement]) extends Statement
 }

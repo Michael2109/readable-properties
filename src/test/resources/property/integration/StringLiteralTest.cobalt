@@ -1,8 +1,0 @@
-package integration
-
-class StringLiteralTest
-
-  let main(args: Int): Unit = do
-
-    # String
-    println("This is some text")

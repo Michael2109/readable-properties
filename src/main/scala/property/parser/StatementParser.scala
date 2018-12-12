@@ -15,6 +15,8 @@ class Statements(indent: Int) {
   val spaces = P((LexicalParser.nonewlinewscomment.? ~~ "\n").repX(1))
   val space_indents = P(spaces.repX ~~ " ".repX(indent))
 
+  val propertySourceParser: P[Seq[Statement]] =  propertyGroup.rep(1).map(x => x)
+
   val propertyGroup: P[Statement] = P(ExpressionParser.identifierParser ~ ":" ~~ indentedBlock).map(x => PropertyGroup(x._1, x._2))
 
   val propertyParser: P[Statement] = P(ExpressionParser.identifierParser ~ "->" ~/ ExpressionParser.expressionParser).map(x => Property(x._1, x._2))
