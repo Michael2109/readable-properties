@@ -13,7 +13,7 @@ class ParseFileTest extends FunSpec with Matchers {
 
   describe("Test parsing and reading from a file") {
     it("Should parse and read a file") {
-      val code = Source.fromFile("src/test/resources/property/integration/parse_file_test.prop").mkString
+      val code = Source.fromFile("src/test/resources/property/integration/parse_file_test.prop").mkString("\n")
       println(TestUtil.parse(code, StatementParser.propertySourceParser))
     }
   }
