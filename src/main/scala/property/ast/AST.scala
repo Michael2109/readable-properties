@@ -1,6 +1,6 @@
 package property.ast
 
-import scala.collection.immutable.HashMap
+import property.ast.IR.{PropertyElementIR, PropertyGroupIR}
 
 object AST {
 
@@ -32,6 +32,28 @@ object AST {
 
   case class PropertyGroup(identifier: Identifier, properties: Seq[Property]) extends Property
 
+  def propertyGroupToIR(propertyGroup: PropertyGroup): PropertyGroupIR = {
+
+    PropertyGroupIR(propertyGroup.identifier.value, propertyGroup.properties.map(property => {
+      property match {
+        case group: PropertyGroup => propertyGroupToIR(group)
+        case element: PropertyElement => propertyElementToIR(element)
+      }
+    }))
+  }
+
+  def propertyElementToIR(propertyElement: PropertyElement): PropertyElementIR = {
+    PropertyElementIR(propertyElement.identifier.value, expressionToIR(propertyElement.value))
+  }
+
+  def expressionToIR(expression: Expression): String = {
+    expression match {
+      case stringLiteral: StringLiteral => stringLiteral.value
+      case intConst: IntConst => intConst.value.toString
+      case doubleConst: DoubleConst => doubleConst.toString
+    }
+  }
+/*
   def other(properties: Seq[Property]): Unit = {
     properties.map(property => {
       astToPropertyMap(property)
@@ -51,6 +73,6 @@ object AST {
       case element: PropertyElement => HashMap(element.identifier -> List(element.value))
     }
 
-  }
+  }*/
 
 }
