@@ -17,24 +17,24 @@ class Statements(indent: Int) {
   val endLine = P("\n" ~~ (" " | "\t").repX(indent + 1).!.map(_.length) ~~ LexicalParser.comment.!.?)
 
 
-  val propertyGroup: P[Statement] = P(ExpressionParser.identifierParser ~ ":" ~~ indentedBlock).map(x => PropertyGroup(x._1, x._2))
+  val propertyGroup: P[Property] = P(ExpressionParser.identifierParser ~ ":" ~~ indentedBlock).map(x => PropertyGroup(x._1, x._2))
 
-  val propertyParser: P[Statement] = P(ExpressionParser.identifierParser ~ "->" ~/ ExpressionParser.expressionParser).map(x => Property(x._1, x._2))
+  val propertyParser: P[Property] = P(ExpressionParser.identifierParser ~ "->" ~/ ExpressionParser.expressionParser).map(x => PropertyElement(x._1, x._2))
 
   val commentParser: P[_] = P(LexicalParser.comment)
 
-  val statementParser: P[Statement] = P(!commentParser ~ (propertyParser | propertyGroup))
+  val statementParser: P[Property] = P(!commentParser ~ (propertyParser | propertyGroup))
 
-  val propertySourceParser: P[Seq[Statement]] =  (statementParser ~ !endLine).repX(0).map(x => x)
+  val propertySourceParser: P[Seq[Property]] =  (statementParser ~ !endLine).repX(0).map(x => x)
 
-  val indentedBlock: P[Seq[Statement]] = {
+  val indentedBlock: P[Seq[Property]] = {
     val deeper: P[Int] = {
       val commentLine = P("\n" ~~ LexicalParser.nonewlinewscomment.?.map(_ => 0)).map((_, Some("")))
       P(LexicalParser.nonewlinewscomment.? ~~ (endLine | commentLine).repX(1)).map {
         _.collectFirst { case (s, None) => s }
       }.filter(_.isDefined).map(_.get)
     }
-    val indented: P[Seq[Statement]] = P(deeper.flatMap { nextIndent =>
+    val indented: P[Seq[Property]] = P(deeper.flatMap { nextIndent =>
       new Statements(nextIndent).statementParser.repX(1, spaces.repX(1) ~~ (" " * nextIndent | "\t" * nextIndent)).map(x => x)
     })
     (indented | (" ".rep ~ statementParser.rep(min = 0, max = 1)))

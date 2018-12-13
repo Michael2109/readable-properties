@@ -28,7 +28,7 @@ import org.scalatest.{FunSpec, Matchers}
 import scala.collection.mutable.ArrayBuffer
 
 @RunWith(classOf[JUnitRunner])
-class PropertyParserTest extends FunSpec with Matchers {
+class PropertyElementParserTest extends FunSpec with Matchers {
 
   describe("Properties in whole file"){
     it("Should parse an empty file"){
@@ -38,7 +38,7 @@ class PropertyParserTest extends FunSpec with Matchers {
     }
   }
 
-  describe("Property group parsers"){
+  describe("PropertyElement group parsers"){
 
     it("Should parse a property group with no properties"){
       val code =
@@ -52,7 +52,7 @@ class PropertyParserTest extends FunSpec with Matchers {
         """groupName:
           |  x->1
         """.stripMargin.replace("\r", "")
-      TestUtil.parse(code, StatementParser.propertySourceParser) shouldBe ArrayBuffer(PropertyGroup(Identifier("groupName"),ArrayBuffer(Property(Identifier("x"),IntConst(1)))))
+      TestUtil.parse(code, StatementParser.propertySourceParser) shouldBe ArrayBuffer(PropertyGroup(Identifier("groupName"),ArrayBuffer(PropertyElement(Identifier("x"),IntConst(1)))))
     }
     it("Should parse a property group with multiple properties"){
       val code =
@@ -61,7 +61,7 @@ class PropertyParserTest extends FunSpec with Matchers {
           |  y->2
           |  z->3
         """.stripMargin.replace("\r", "")
-      TestUtil.parse(code, StatementParser.propertySourceParser) shouldBe ArrayBuffer(PropertyGroup(Identifier("groupName"),ArrayBuffer(Property(Identifier("x"),IntConst(1)), Property(Identifier("y"),IntConst(2)), Property(Identifier("z"),IntConst(3)))))
+      TestUtil.parse(code, StatementParser.propertySourceParser) shouldBe ArrayBuffer(PropertyGroup(Identifier("groupName"),ArrayBuffer(PropertyElement(Identifier("x"),IntConst(1)), PropertyElement(Identifier("y"),IntConst(2)), PropertyElement(Identifier("z"),IntConst(3)))))
     }
     it("Should parse a property group with nested property groups"){
       val code =
@@ -74,19 +74,19 @@ class PropertyParserTest extends FunSpec with Matchers {
           |  y->2
           |  z->3
         """.stripMargin.replace("\r", "")
-      TestUtil.parse(code, StatementParser.propertySourceParser) shouldBe ArrayBuffer(PropertyGroup(Identifier("groupName1"),ArrayBuffer(Property(Identifier("x"),IntConst(1)), PropertyGroup(Identifier("groupName2"),ArrayBuffer(Property(Identifier("a"),IntConst(1)), Property(Identifier("b"),IntConst(2)))))))
+      TestUtil.parse(code, StatementParser.propertySourceParser) shouldBe ArrayBuffer(PropertyGroup(Identifier("groupName1"),ArrayBuffer(PropertyElement(Identifier("x"),IntConst(1)), PropertyGroup(Identifier("groupName2"),ArrayBuffer(PropertyElement(Identifier("a"),IntConst(1)), PropertyElement(Identifier("b"),IntConst(2)))))))
     }
   }
 
-  describe("Property parsers") {
+  describe("PropertyElement parsers") {
     it("Should parse an integer property") {
-      TestUtil.parse("x->1", StatementParser.propertySourceParser) shouldBe ArrayBuffer(Property(Identifier("x"), IntConst(1)))
+      TestUtil.parse("x->1", StatementParser.propertySourceParser) shouldBe ArrayBuffer(PropertyElement(Identifier("x"), IntConst(1)))
     }
     it("Should parse a double property") {
-      TestUtil.parse("x->1.123456789", StatementParser.propertySourceParser) shouldBe ArrayBuffer(Property(Identifier("x"), DoubleConst(1.123456789)))
+      TestUtil.parse("x->1.123456789", StatementParser.propertySourceParser) shouldBe ArrayBuffer(PropertyElement(Identifier("x"), DoubleConst(1.123456789)))
     }
     it("Should parse a string literal property") {
-      TestUtil.parse("x->\"This is a string property\"", StatementParser.propertySourceParser) shouldBe ArrayBuffer(Property(Identifier("x"),StringLiteral("This is a string property")))
+      TestUtil.parse("x->\"This is a string property\"", StatementParser.propertySourceParser) shouldBe ArrayBuffer(PropertyElement(Identifier("x"),StringLiteral("This is a string property")))
     }
   }
 }
