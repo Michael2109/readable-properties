@@ -1,5 +1,7 @@
 package property.ast
 
+import property.config.Constants
+
 object IR {
 
   trait Expression
@@ -10,8 +12,19 @@ object IR {
 
   case class PropertyGroupIR(identifier: String, properties: Seq[PropertyIR]) extends PropertyIR
 
-  def flattenProperties(properties: Seq[PropertyIR]): Map[String, String] = {
-      null
+  case class PropertyContainerIR(properties: Seq[PropertyIR])
+
+  def flattenProperties(propertyContainerIR: PropertyContainerIR): Map[String, String] = {
+    val flattenedPropertyMaps = propertyContainerIR.properties.map(property => flattenProperty(property, Seq.empty))
+    val combinedMaps = flattenedPropertyMaps.flatten
+    combinedMaps.map(entry => entry._1.mkString(Constants.PropertySeparator) -> entry._2).toMap
+  }
+
+  def flattenProperty(property: PropertyIR, previousKeys: Seq[String]): Map[Seq[String], String] ={
+    property match {
+      case groupIR: PropertyGroupIR => groupIR.properties.map(p => flattenProperty(p, previousKeys :+ groupIR.identifier)).reduce(_ ++ _)
+      case elementIR: PropertyElementIR => Map((previousKeys :+ elementIR.identifier) -> elementIR.value)
+    }
   }
 
 /*

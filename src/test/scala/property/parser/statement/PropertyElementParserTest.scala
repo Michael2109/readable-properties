@@ -70,11 +70,11 @@ class PropertyElementParserTest extends FunSpec with Matchers {
           |  groupName2:
           |    a=1
           |    b=2
-          |    c-3
+          |    c=3
           |  y=2
           |  z=3
         """.stripMargin.replace("\r", "")
-      TestUtil.parse(code, StatementParser.propertySourceParser) shouldBe ArrayBuffer(PropertyGroup(Identifier("groupName1"),ArrayBuffer(PropertyElement(Identifier("x"),IntConst(1)), PropertyGroup(Identifier("groupName2"),ArrayBuffer(PropertyElement(Identifier("a"),IntConst(1)), PropertyElement(Identifier("b"),IntConst(2)))))))
+      TestUtil.parse(code, StatementParser.propertySourceParser) shouldBe ArrayBuffer(PropertyGroup(Identifier("groupName1"),ArrayBuffer(PropertyElement(Identifier("x"),IntConst(1)), PropertyGroup(Identifier("groupName2"),ArrayBuffer(PropertyElement(Identifier("a"),IntConst(1)), PropertyElement(Identifier("b"),IntConst(2)), PropertyElement(Identifier("c"),IntConst(3)), PropertyElement(Identifier("y"),IntConst(2)), PropertyElement(Identifier("z"),IntConst(3)))))))
     }
 
     it("Should parse a property group with nested property groups (Group first)"){
@@ -83,12 +83,12 @@ class PropertyElementParserTest extends FunSpec with Matchers {
           |  groupName2:
           |    a=1
           |    b=2
-          |    c-3
+          |    c=3
           |  x=1
           |  y=2
           |  z=3
         """.stripMargin.replace("\r", "")
-      TestUtil.parse(code, StatementParser.propertySourceParser) shouldBe ArrayBuffer(PropertyGroup(Identifier("groupName1"),ArrayBuffer(PropertyGroup(Identifier("groupName2"),ArrayBuffer(PropertyElement(Identifier("a"),IntConst(1)), PropertyElement(Identifier("b"),IntConst(2)))), PropertyElement(Identifier("x"),IntConst(1)))))
+      TestUtil.parse(code, StatementParser.propertySourceParser) shouldBe ArrayBuffer(PropertyGroup(Identifier("groupName1"),ArrayBuffer(PropertyGroup(Identifier("groupName2"),ArrayBuffer(PropertyElement(Identifier("a"),IntConst(1)), PropertyElement(Identifier("b"),IntConst(2)), PropertyElement(Identifier("c"),IntConst(3)), PropertyElement(Identifier("x"),IntConst(1)), PropertyElement(Identifier("y"),IntConst(2)), PropertyElement(Identifier("z"),IntConst(3)))))))
     }
   }
 

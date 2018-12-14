@@ -16,7 +16,7 @@ class Statements(indent: Int) {
   val space_indents = P(spaces.repX ~~ " ".repX(indent))
   val endLine = P("\n" ~~ (" " | "\t").repX(indent + 1).!.map(_.length) ~~ LexicalParser.comment.!.?)
 
-  val propertyGroup: P[Property] = P(ExpressionParser.identifierParser ~ ":" ~~ indentedBlock).map(x => PropertyGroup(x._1, x._2))
+  val propertyGroup: P[Property] = P(ExpressionParser.identifierParser ~ LexicalParser.kw(":") ~ indentedBlock).map(x => PropertyGroup(x._1, x._2))
 
   val propertyElement: P[Property] = P(ExpressionParser.identifierParser ~ "=" ~ ExpressionParser.expressionParser).map(x => PropertyElement(x._1, x._2))
 
@@ -24,7 +24,7 @@ class Statements(indent: Int) {
 
   val statementParser: P[Property] = P(!commentParser ~ (propertyGroup | propertyElement))
 
-  val propertySourceParser: P[Seq[Property]] =  (statementParser ~ !endLine).repX(0).map(x => x)
+  val propertySourceParser: P[PropertyContainer] =  (statementParser ~ !endLine).repX(0).map(PropertyContainer)
 
   val indentedBlock: P[Seq[Property]] = {
     val deeper: P[Int] = {
@@ -36,6 +36,6 @@ class Statements(indent: Int) {
     val indented: P[Seq[Property]] = P(deeper.flatMap { nextIndent =>
       new Statements(nextIndent).statementParser.repX(1, spaces.repX(1) ~~ (" " * nextIndent | "\t" * nextIndent)).map(x => x)
     })
-    indented | (" ".rep ~ statementParser.rep(min = 0))
+    indented | (" ".rep ~ statementParser.rep())
   }
 }

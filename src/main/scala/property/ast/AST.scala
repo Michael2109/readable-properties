@@ -1,6 +1,6 @@
 package property.ast
 
-import property.ast.IR.{PropertyElementIR, PropertyGroupIR}
+import property.ast.IR.{PropertyContainerIR, PropertyElementIR, PropertyGroupIR}
 
 object AST {
 
@@ -32,8 +32,19 @@ object AST {
 
   case class PropertyGroup(identifier: Identifier, properties: Seq[Property]) extends Property
 
-  def propertyGroupToIR(propertyGroup: PropertyGroup): PropertyGroupIR = {
+  case class PropertyContainer(properties: Seq[Property])
 
+  def propertyContainerToIR(propertyContainer: PropertyContainer): PropertyContainerIR = {
+    val propertyIRs = propertyContainer.properties.map(property => {
+      property match {
+        case group: PropertyGroup => propertyGroupToIR(group)
+        case element: PropertyElement => propertyElementToIR(element)
+      }
+    })
+    PropertyContainerIR(propertyIRs)
+  }
+
+  def propertyGroupToIR(propertyGroup: PropertyGroup): PropertyGroupIR = {
     PropertyGroupIR(propertyGroup.identifier.value, propertyGroup.properties.map(property => {
       property match {
         case group: PropertyGroup => propertyGroupToIR(group)

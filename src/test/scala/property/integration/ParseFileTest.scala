@@ -3,6 +3,8 @@ package property.integration
 import org.junit.runner.RunWith
 import org.scalatest.{FunSpec, Matchers}
 import org.scalatest.junit.JUnitRunner
+import property.ast.{AST, IR}
+import property.ast.AST.PropertyContainer
 import property.parser.StatementParser
 import property.utils.TestUtil
 
@@ -13,8 +15,16 @@ class ParseFileTest extends FunSpec with Matchers {
 
   describe("Test parsing and reading from a file") {
     it("Should parse and read a file") {
-      val code = Source.fromFile("src/test/resources/property/integration/parse_file_test.prop").mkString("\n")
-      println(TestUtil.parse(code, StatementParser.propertySourceParser))
+      val code = Source.fromFile("src/test/resources/property/integration/parse_file_test.prop").getLines().mkString("\n")
+      val propertyContainer: PropertyContainer = TestUtil.parsePropertyString(code)
+
+      val ir = AST.propertyContainerToIR(propertyContainer)
+      val properties = IR.flattenProperties(ir)
+
+      properties.getOrElse("a.b.c", null) shouldBe "5"
+      properties.getOrElse("a.b.d", null) shouldBe "10"
+      properties.getOrElse("a.b.e.f", null) shouldBe "15"
+
     }
   }
 }
