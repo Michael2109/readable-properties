@@ -15,7 +15,7 @@ class ParseFileTest extends FunSpec with Matchers {
 
   describe("Test parsing and reading from a file") {
     it("Should parse and read a file") {
-      val code = Source.fromFile("src/test/resources/property/integration/parse_file_test.prop").getLines().mkString("\n")
+      val code = Source.fromResource("property/integration/parse_file_test.prop").getLines().mkString("\n")
       val propertyContainer: PropertyContainer = TestUtil.parsePropertyString(code)
 
       val ir = AST.propertyContainerToIR(propertyContainer)

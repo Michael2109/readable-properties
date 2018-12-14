@@ -23,6 +23,7 @@ import property.utils.TestUtil
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{FunSpec, Matchers}
+import property.ast.AST
 import property.ast.AST._
 
 import scala.collection.mutable.ArrayBuffer
@@ -34,7 +35,7 @@ class PropertyElementParserTest extends FunSpec with Matchers {
     it("Should parse an empty file"){
       val code =
         """""".stripMargin.replace("\r", "")
-      TestUtil.parse(code, StatementParser.propertySourceParser) shouldBe ArrayBuffer()
+      TestUtil.parse(code, StatementParser.propertySourceParser) shouldBe AST.PropertyContainer(ArrayBuffer())
     }
   }
 
@@ -44,7 +45,7 @@ class PropertyElementParserTest extends FunSpec with Matchers {
       val code =
         """groupName:
         """.stripMargin.replace("\r", "")
-      TestUtil.parse(code, StatementParser.propertySourceParser) shouldBe ArrayBuffer(PropertyGroup(Identifier("groupName"),ArrayBuffer()))
+      TestUtil.parse(code, StatementParser.propertySourceParser) shouldBe AST.PropertyContainer(ArrayBuffer(PropertyGroup(Identifier("groupName"),ArrayBuffer())))
     }
 
     it("Should parse a property group with 1 property"){
@@ -52,7 +53,7 @@ class PropertyElementParserTest extends FunSpec with Matchers {
         """groupName:
           |  x=1
         """.stripMargin.replace("\r", "")
-      TestUtil.parse(code, StatementParser.propertySourceParser) shouldBe ArrayBuffer(PropertyGroup(Identifier("groupName"),ArrayBuffer(PropertyElement(Identifier("x"),IntConst(1)))))
+      TestUtil.parse(code, StatementParser.propertySourceParser) shouldBe AST.PropertyContainer(ArrayBuffer(PropertyGroup(Identifier("groupName"),ArrayBuffer(PropertyElement(Identifier("x"),IntConst(1))))))
     }
     it("Should parse a property group with multiple properties"){
       val code =
@@ -61,7 +62,7 @@ class PropertyElementParserTest extends FunSpec with Matchers {
           |  y=2
           |  z=3
         """.stripMargin.replace("\r", "")
-      TestUtil.parse(code, StatementParser.propertySourceParser) shouldBe ArrayBuffer(PropertyGroup(Identifier("groupName"),ArrayBuffer(PropertyElement(Identifier("x"),IntConst(1)), PropertyElement(Identifier("y"),IntConst(2)), PropertyElement(Identifier("z"),IntConst(3)))))
+      TestUtil.parse(code, StatementParser.propertySourceParser) shouldBe AST.PropertyContainer(ArrayBuffer(PropertyGroup(Identifier("groupName"),ArrayBuffer(PropertyElement(Identifier("x"),IntConst(1)), PropertyElement(Identifier("y"),IntConst(2)), PropertyElement(Identifier("z"),IntConst(3))))))
     }
     it("Should parse a property group with nested property groups"){
       val code =
@@ -74,7 +75,7 @@ class PropertyElementParserTest extends FunSpec with Matchers {
           |  y=2
           |  z=3
         """.stripMargin.replace("\r", "")
-      TestUtil.parse(code, StatementParser.propertySourceParser) shouldBe ArrayBuffer(PropertyGroup(Identifier("groupName1"),ArrayBuffer(PropertyElement(Identifier("x"),IntConst(1)), PropertyGroup(Identifier("groupName2"),ArrayBuffer(PropertyElement(Identifier("a"),IntConst(1)), PropertyElement(Identifier("b"),IntConst(2)), PropertyElement(Identifier("c"),IntConst(3)), PropertyElement(Identifier("y"),IntConst(2)), PropertyElement(Identifier("z"),IntConst(3)))))))
+      TestUtil.parse(code, StatementParser.propertySourceParser) shouldBe AST.PropertyContainer(ArrayBuffer(PropertyGroup(Identifier("groupName1"),ArrayBuffer(PropertyElement(Identifier("x"),IntConst(1)), PropertyGroup(Identifier("groupName2"),ArrayBuffer(PropertyElement(Identifier("a"),IntConst(1)), PropertyElement(Identifier("b"),IntConst(2)), PropertyElement(Identifier("c"),IntConst(3)), PropertyElement(Identifier("y"),IntConst(2)), PropertyElement(Identifier("z"),IntConst(3))))))))
     }
 
     it("Should parse a property group with nested property groups (Group first)"){
@@ -88,19 +89,19 @@ class PropertyElementParserTest extends FunSpec with Matchers {
           |  y=2
           |  z=3
         """.stripMargin.replace("\r", "")
-      TestUtil.parse(code, StatementParser.propertySourceParser) shouldBe ArrayBuffer(PropertyGroup(Identifier("groupName1"),ArrayBuffer(PropertyGroup(Identifier("groupName2"),ArrayBuffer(PropertyElement(Identifier("a"),IntConst(1)), PropertyElement(Identifier("b"),IntConst(2)), PropertyElement(Identifier("c"),IntConst(3)), PropertyElement(Identifier("x"),IntConst(1)), PropertyElement(Identifier("y"),IntConst(2)), PropertyElement(Identifier("z"),IntConst(3)))))))
+      TestUtil.parse(code, StatementParser.propertySourceParser) shouldBe AST.PropertyContainer(ArrayBuffer(PropertyGroup(Identifier("groupName1"),ArrayBuffer(PropertyGroup(Identifier("groupName2"),ArrayBuffer(PropertyElement(Identifier("a"),IntConst(1)), PropertyElement(Identifier("b"),IntConst(2)), PropertyElement(Identifier("c"),IntConst(3)), PropertyElement(Identifier("x"),IntConst(1)), PropertyElement(Identifier("y"),IntConst(2)), PropertyElement(Identifier("z"),IntConst(3))))))))
     }
   }
 
   describe("PropertyElement parsers") {
     it("Should parse an integer property") {
-      TestUtil.parse("x=1", StatementParser.propertySourceParser) shouldBe ArrayBuffer(PropertyElement(Identifier("x"), IntConst(1)))
+      TestUtil.parse("x=1", StatementParser.propertySourceParser) shouldBe AST.PropertyContainer(ArrayBuffer(PropertyElement(Identifier("x"), IntConst(1))))
     }
     it("Should parse a double property") {
-      TestUtil.parse("x=1.123456789", StatementParser.propertySourceParser) shouldBe ArrayBuffer(PropertyElement(Identifier("x"), DoubleConst(1.123456789)))
+      TestUtil.parse("x=1.123456789", StatementParser.propertySourceParser) shouldBe AST.PropertyContainer(ArrayBuffer(PropertyElement(Identifier("x"), DoubleConst(1.123456789))))
     }
     it("Should parse a string literal property") {
-      TestUtil.parse("x=\"This is a string property\"", StatementParser.propertySourceParser) shouldBe ArrayBuffer(PropertyElement(Identifier("x"),StringLiteral("This is a string property")))
+      TestUtil.parse("x=\"This is a string property\"", StatementParser.propertySourceParser) shouldBe AST.PropertyContainer(ArrayBuffer(PropertyElement(Identifier("x"),StringLiteral("This is a string property"))))
     }
   }
 }

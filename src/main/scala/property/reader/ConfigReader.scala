@@ -10,9 +10,10 @@ import property.parser.StatementParser
 import scala.io.Source
 
 class ConfigReader {
-  def parseFile(file: File): Configuration = {
+  def parseFile(filePath: String): Configuration = {
 
-    val code = Source.fromFile(file).getLines().mkString("\n")
+    println("Reading file: " + filePath)
+    val code = Source.fromResource(filePath).getLines().mkString("\n")
 
     val propertyContainer: PropertyContainer = StatementParser.propertySourceParser.parse(code) match {
       case Parsed.Success(value, _) => value

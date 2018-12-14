@@ -8,5 +8,4 @@ class Configuration(propertyMap: Map[String, String]) {
       case None => throw new Exception("Key not found: " + key)
     }
   }
-
 }
