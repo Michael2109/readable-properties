@@ -12,7 +12,6 @@ import scala.io.Source
 class ConfigReader {
   def parseFile(filePath: String): Configuration = {
 
-    println("Reading file: " + filePath)
     val code = Source.fromResource(filePath).getLines().mkString("\n")
 
     val propertyContainer: PropertyContainer = StatementParser.propertySourceParser.parse(code) match {

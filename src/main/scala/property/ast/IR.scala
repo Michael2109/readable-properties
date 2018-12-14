@@ -1,6 +1,6 @@
 package property.ast
 
-import property.config.Config
+import property.config.ApplicationConfig
 
 object IR {
 
@@ -17,7 +17,7 @@ object IR {
   def flattenProperties(propertyContainerIR: PropertyContainerIR): Map[String, String] = {
     val flattenedPropertyMaps = propertyContainerIR.properties.map(property => flattenProperty(property, Seq.empty))
     val combinedMaps = flattenedPropertyMaps.flatten
-    combinedMaps.map(entry => entry._1.mkString(Config.PropertySeparator) -> entry._2).toMap
+    combinedMaps.map(entry => entry._1.mkString(ApplicationConfig.PropertySeparator) -> entry._2).toMap
   }
 
   def flattenProperty(property: PropertyIR, previousKeys: Seq[String]): Map[Seq[String], String] ={

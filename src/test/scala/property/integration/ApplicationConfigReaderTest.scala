@@ -8,7 +8,7 @@ import org.scalatest.{FunSpec, Matchers}
 import property.reader.ConfigReader
 
 @RunWith(classOf[JUnitRunner])
-class ConfigReaderTest extends FunSpec with Matchers {
+class ApplicationConfigReaderTest extends FunSpec with Matchers {
 
   describe("Test reading a config file") {
     it("Should parse and read a  config file") {
