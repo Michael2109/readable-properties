@@ -1,13 +1,38 @@
 package property.reader
 
+import java.io.File
+
 import fastparse.core.Parsed
-import property.ast.{AST, IR}
 import property.ast.AST.PropertyContainer
+import property.ast.{AST, IR}
 import property.parser.StatementParser
 
 import scala.io.Source
 
-class ConfigReader {
+object ConfigGenerator {
+
+  /**
+    * Gets an empty configuration.
+    *
+    * @return
+    */
+  def empty(): Configuration = {
+    new Configuration(Map.empty)
+  }
+
+  /**
+    * Reloads any cached configs, picking up changes to system properties for example.
+    *
+    * @return
+    */
+  def invalidateCaches(): Configuration = {
+    null
+  }
+
+  def parseFile(file: File): Configuration = {
+    parseFile(file.getAbsolutePath)
+  }
+
   def parseFile(filePath: String): Configuration = {
 
     val code = Source.fromResource(filePath).getLines().mkString("\n")
