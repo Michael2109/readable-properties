@@ -1,7 +1,5 @@
 package property.reader
 
-import java.io.File
-
 import fastparse.core.Parsed
 import property.ast.{AST, IR}
 import property.ast.AST.PropertyContainer

@@ -4,7 +4,7 @@ import property.config.ApplicationConfig
 
 object IR {
 
-  trait Expression
+  import sext._
 
   trait PropertyIR
 

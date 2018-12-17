@@ -1,6 +1,7 @@
-a:
-    b:
-        c = 5
-    d = 10
-e:
-    f = 15
+numbers:
+    another:
+        property: 5
+    integer: 50132
+    double: 10.33456
+arrays:
+    array: ["this is a string", 1, 2.034]

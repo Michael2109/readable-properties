@@ -8,6 +8,8 @@ object AST {
 
   case class Identifier(value: String) extends Expression
 
+  case class ValueArray(value: Seq[Expression]) extends Expression
+
   case class StringLiteral(value: String) extends Expression
 
   case class BoolConst(value: Boolean) extends Expression
@@ -59,31 +61,11 @@ object AST {
 
   def expressionToIR(expression: Expression): String = {
     expression match {
+      case identifier: Identifier => identifier.value
       case stringLiteral: StringLiteral => stringLiteral.value
       case intConst: IntConst => intConst.value.toString
-      case doubleConst: DoubleConst => doubleConst.toString
+      case doubleConst: DoubleConst => doubleConst.value.toString
+      case valueArray: ValueArray => valueArray.value.map(expressionToIR).mkString(",")
     }
   }
-/*
-  def other(properties: Seq[Property]): Unit = {
-    properties.map(property => {
-      astToPropertyMap(property)
-    })
-  }
-
-  def propertyGroupToMap(propertyGroup: PropertyGroup): Map[String, Seq[String]] ={
-
-  }
-
-  def propertyElementToMap
-
-  def astToPropertyMap(properties: Seq[Property]): Map[String, Seq[String]] = {
-
-    property match {
-      case group: PropertyGroup => propertyGroupToMap(group)
-      case element: PropertyElement => HashMap(element.identifier -> List(element.value))
-    }
-
-  }*/
-
 }

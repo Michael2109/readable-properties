@@ -8,12 +8,14 @@ import org.scalatest.{FunSpec, Matchers}
 import property.reader.ConfigReader
 
 @RunWith(classOf[JUnitRunner])
-class ApplicationConfigReaderTest extends FunSpec with Matchers {
+class ConfigReaderTest extends FunSpec with Matchers {
 
   describe("Test reading a config file") {
     it("Should parse and read a  config file") {
       val configuration = new ConfigReader().parseFile("property/integration/config_reader_test.prop")
-      configuration.getString("a.b.c") shouldBe("5")
+      configuration.getString("numbers.integer") shouldBe("50132")
+      configuration.getString("numbers.double") shouldBe("10.33456")
+      configuration.getString("arrays.array") shouldBe("this is a string,1,2.034")
     }
   }
 }
