@@ -22,8 +22,8 @@ class ParseFileTest extends FunSpec with Matchers {
       val properties = IR.flattenProperties(ir)
 
       properties.getOrElse("a.b.c", null) shouldBe "5"
-      properties.getOrElse("a.b.d", null) shouldBe "10"
-      properties.getOrElse("a.b.e.f", null) shouldBe "15"
+      properties.getOrElse("a.d", null) shouldBe "10"
+      properties.getOrElse("e.f", null) shouldBe "15"
 
     }
   }

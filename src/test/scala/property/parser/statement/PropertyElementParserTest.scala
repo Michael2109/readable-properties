@@ -27,7 +27,7 @@ class PropertyElementParserTest extends FunSpec with Matchers {
       val code =
         """groupName:
         """.stripMargin.replace("\r", "")
-      TestUtil.parse(code, StatementParser.propertySourceParser) shouldBe AST.PropertyContainer(ArrayBuffer(PropertyGroup(Identifier("groupName"),ArrayBuffer())))
+      TestUtil.parse(code, StatementParser.propertySourceParser) shouldBe PropertyContainer(ArrayBuffer())
     }
 
     it("Should parse a property group with 1 property"){
@@ -71,7 +71,7 @@ class PropertyElementParserTest extends FunSpec with Matchers {
           |  y:2
           |  z:3
         """.stripMargin.replace("\r", "")
-      TestUtil.parse(code, StatementParser.propertySourceParser) shouldBe AST.PropertyContainer(ArrayBuffer(PropertyGroup(Identifier("groupName1"),ArrayBuffer(PropertyGroup(Identifier("groupName2"),ArrayBuffer(PropertyElement(Identifier("a"),IntConst(1)), PropertyElement(Identifier("b"),IntConst(2)), PropertyElement(Identifier("c"),IntConst(3)), PropertyElement(Identifier("x"),IntConst(1)), PropertyElement(Identifier("y"),IntConst(2)), PropertyElement(Identifier("z"),IntConst(3))))))))
+      TestUtil.parse(code, StatementParser.propertySourceParser) shouldBe PropertyContainer(ArrayBuffer(PropertyGroup(Identifier("groupName1"),ArrayBuffer(PropertyGroup(Identifier("groupName2"),ArrayBuffer(PropertyElement(Identifier("a"),IntConst(1)), PropertyElement(Identifier("b"),IntConst(2)), PropertyElement(Identifier("c"),IntConst(3)))), PropertyElement(Identifier("x"),IntConst(1)), PropertyElement(Identifier("y"),IntConst(2)), PropertyElement(Identifier("z"),IntConst(3))))))
     }
   }
 
